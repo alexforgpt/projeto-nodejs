@@ -1,0 +1,24 @@
+{
+  "name": "projeto-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexforgpt/projeto-nodejs.git"
+  },
+  "author": "alex",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexforgpt/projeto-nodejs/issues"
+  },
+  "homepage": "https://github.com/alexforgpt/projeto-nodejs#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.7"
+  }
+}
