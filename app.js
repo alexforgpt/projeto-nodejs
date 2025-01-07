@@ -1,9 +1,32 @@
 const express = require('express')
+const mysql = require ('mysql2')
 const app = express()
 const port = 3000
+const NOEM_DA_TABELA ="users"
 const path = require('path');
 let moneyBalance = null;
 app.use(express.json());
+ 
+
+ const connection =mysql.createConnection ({
+  host: '127.0.0.1',
+  user :'root',
+  password :'',
+  database:'psi_t1',
+  port  :3306
+ });
+
+
+ connection.connect((err)=> {
+
+  if (err) {
+    console.error('Erro ao conectar a base  de dados', err.message );
+  } else {
+    console.log('Conectado a base de dados  MYSQL1:');
+     }
+  });
+ 
+const NOME_TABELA="users"
 
 
 app.get('/', (req, res) => {
@@ -82,43 +105,61 @@ app.get('/sobre', (req, res) => {
 
   let numId = 2;
 
-  app.get('/users', (req, res) => {
-    res.send(users);
-  })
+app.get('/users', (req, res) => {
   
-  app.post('/users', (req, res) => {
-    const newUser = req.body
-    newUser.id = numId
-    numId =numId+1 
-    users.push(newUser);
-    res.sendStatus(200);
+    const myQuery   = `SELECT * FROM ${NOME_TABELA}`
+
+    connection.query(myQuery, (err, results) => {
+      if (err){
+      return res.status(500).send('Erro ao buscar users:' + err.mensage );
+        }
+      res.json(results);
+    });
+  })
+
+
+    app.post('/users', (request, response) =>{
+      const first_name = request.body.first_name
+      const last_name = request.body.last_name
+      const email = request.body.email
+      
+       const myQuery   = `INSERT INTO users (id, first_name, last_name, email) VALUES (NULL,'${first_name}','${last_name}','${email}');`
+      
+     connection.query(myQuery, (err,results) => {
+      
+      
+       if (err) {
+         return response.status(500).send('Erro ao buscar users: ' + err.message);
+       }
+      
+       response.json(results);
+     });
+     })
+      
+
 
  
-  })
   
-  app.put('/users', (req, res) => {
-
-    for(let i = 0;i<users.length;i++){
-
-      if (users[i].id== req.body.id){
-          if(users[i].first_name != null)
-          {
-            users[i].first_name =req.body.first_name;
-          }
-          if(users[i].last_name != null)
-            {
-              users[i].last_name =req.body.last_name;
-            }
-            if(users[i].email != null)
-              {
-                users[i].email =req.body.email;
-              }
+  
+  app.put('/users/:id', (request, response) => {
+    const id = request.params.id
+    const first_name = request.body.first_name
+    const last_name = request.body.last_name
+    const email = request.body.email
     
+     const myQuery   = `UPDATE users SET first_name = '${first_name}' ,last_name= '${last_name}', email='${email}' Where id = '${id}';`
+    
+   connection.query(myQuery, (err,results) => {
+    
+    
+     if (err) {
+       return response.status(500).send('Erro ao buscar users: ' + err.message);
+     }
+    
+     response.json(results);
+   });
+   })
 
-          res.sendStatus(200);
-      }
-    }
-  })
 
   app.delete('/users', (req, res) => {
     res.send(users);
